@@ -43,6 +43,7 @@ This is the popular [MovieLens](https://grouplens.org/datasets/movielens/100k/) 
 
 We will load the dataset with Pandas onto Dataframes data, item and user
 
+'''python
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -65,4 +66,4 @@ item = pd.read_csv('Desktop/ml-100k/u.item', sep='|',
 names=item_cols, encoding='latin-1')
 data = pd.read_csv('Desktop/ml-100k/u.data', sep='\t',
 names=data_cols, encoding='latin-1')
-
+'''
