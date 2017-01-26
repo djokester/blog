@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Building A Simple Recommender System With MovieLens DataSet – Djokester – Civil Engineer till Afternoon. Coder by Night.</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="We will try to build an extremely simple recommender system with the help of just Pandas. We will be using the MovieLens dataset.
+
+" />
+    <meta property="og:description" content="We will try to build an extremely simple recommender system with the help of just Pandas. We will be using the MovieLens dataset.
+
+" />
+    
+    <meta name="author" content="Djokester" />
+
+    
+    <meta property="og:title" content="Building A Simple Recommender System With MovieLens DataSet" />
+    <meta property="twitter:title" content="Building A Simple Recommender System With MovieLens DataSet" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="alternate" type="application/rss+xml" title="Djokester - Civil Engineer till Afternoon. Coder by Night." href="/feed.xml" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+  </head>
+
+  <body>
+    
+    
+    <div class="intro-header">    
+      <div class="container">
+        <div class="post-heading">
+            <h1>Building A Simple Recommender System With MovieLens DataSet</h1>
+            <span class="meta">Posted by <a href="/about"> Samriddhi Sinha
+            </a> on December 26, 2016
+            <a href="/"> { Return to Blog }</a>
+            </span>
+        </div>
+            
+      </div>
+    </div>
+    
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+ <div class="space-extra-small">
+ </div>
+
+  <div class="entry">
+    <p>We will try to build an extremely simple recommender system with the help of just <strong>Pandas</strong>. We will be using the <strong>MovieLens dataset</strong>.</p>
+
+<hr />
+<h2 id="introduction">Introduction</h2>
+
+<p>One of the most common datasets that is available on the internet for building a <strong>Recommender System</strong> is the <strong>MovieLens DataSet</strong>. Do a simple google search and see how many GitHub projects pop up. The data is obtained from the <a href="https://movielens.org/">MovieLens</a> website during the seven-month period from September 19th, 1997 through April 22nd, 1998.</p>
+
+<p>What is a recommender system then?
+In ideology it is a machine learning prototype that learns how users’ choice of products (in this case movies)  vary with the users characteristics and recommends a product accordingly. For example a 15 year old kid is more likely to watch the upcoming The Lego Batman Movie than someone who is say 35 years old. Or maybe girls would prefer to watch The Notebook more than guys.</p>
+
+<p>But simple recommender systems do exist. If I pull out a list of Movies from IMDB along with their ratings then all I need to do is sort the movies first according to ratings and then according to the number of people who saw the movie. This would enable me to give people a generalized recommendation but not a personalised recommendation. I will use two terms users and product extensively throughout this post for comfort. Products are the items to be recommended in this case it is movies. Users are the people the recommendation is being made to.</p>
+
+<p>I would be building the recommender system in Python. There are three types of recommender systems possible.</p>
+
+<ol>
+  <li><strong>The Simple Recommender</strong>: Just filter the movies based on their popularity/ratings and we are good to go. All we need to do is load them up on Pandas and sort them.</li>
+  <li><strong>Recommendation Based on Collaborative Filtering</strong>: The basic difference between this method and the next method is pretty simple. Collaborative Filtering is based on either
+    <ul>
+      <li>the similarity in preferences, tastes and choices of two users. It analyses how similar the tastes of one user is to another and makes recommendations on the basis of that.</li>
+      <li>the similarity in between two items. In this case factors like genre come into play.</li>
+    </ul>
+  </li>
+  <li><strong>Recommendation Based on Content Based Filtering</strong>: Content based filtering is based on the users choice of products. If you like the TV Series Game of Thrones thn you might like the series Vikings</li>
+</ol>
+
+<h2 id="requirements">Requirements</h2>
+
+<ol>
+  <li><strong>SciPy</strong></li>
+  <li><strong>NumPy</strong></li>
+  <li><strong>matplotlib</strong></li>
+  <li><strong>Pandas</strong></li>
+</ol>
+
+<h2 id="the-dataset">The Dataset</h2>
+
+<p>This is the popular <a href="https://grouplens.org/datasets/movielens/100k/">MovieLens</a> dataset. It has multiple CSV  files zipped into a folder. We shall be working with these files</p>
+
+<ol>
+  <li>u.data: A  consolidated data about users and the movie ratings. This is a tab separated list of <strong>user id-item id-rating-timestamp</strong></li>
+  <li>u.item: This contains information about the item (movies) . This is a tab separated list of <strong>movie id  movie title  release date  video release date  IMDb URL  unknown  Action  Adventure  Animation  Children’s  Comedy  Crime  Documentary  Drama  Fantasy  Film-Noir  Horror  Musical  Mystery  Romance  Sci-Fi  Thriller  War  Western</strong>. The last 19 are genres with values 0 or 1.</li>
+  <li>u.user: Demographic information about the users; this is a tab separated list of <strong>user id-age-gender-occupation-zip code</strong></li>
+</ol>
+
+<h2 id="loading-the-dataset">Loading the Dataset</h2>
+
+<p>We will load the dataset with Pandas onto Dataframes data, item and user</p>
+
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'samriddhisinha';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+            <div class="svg-icon">
+          
+<a href="mailto:samriddhisinha.iitkgp@gmail.com"><i class="icon-envelope icon-2x"></i></a>
+<a href="https://www.facebook.com/samriddhi.sinha.7"><i class="icon-facebook-sign icon-2x"></i></a>
+
+<a href="https://github.com/djokester"><i class="icon-github icon-2x"></i></a>
+<a href="https://instagram.com/samriddhidjokester"><i class="icon-instagram icon-2x"></i></a>
+
+
+
+<a href="https://www.twitter.com/samdjokester"><i class="icon-twitter icon-2x"></i></a>
+
+
+
+
+            </div>
+        </footer>
+      </div>
+    </div>
+
+
+    
+
+  </body>
+</html>
