@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>The Eternal Lorem Ipsum Placeholder Text Here – Djokester – Civil Engineer till Afternoon. Coder by Night.</title>
+    <title>Building A Recommender System on User-User Collaborative Filtering (MovieLens DataSet) – Djokester – Civil Engineer till Afternoon. Coder by Night.</title>
 
         <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
@@ -9,18 +9,18 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
 
     
-    <meta name="description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam imperdiet urna eu dolor placerat varius. Vivamus eros augue, consequat id scelerisque nec, fringilla in est. Proin pellentesque malesuada mauris, quis aliquam augue vestibulum ac.
+    <meta name="description" content="Previously I built a very simple data set based on just Pandas manipulation. Now I am looking to build a Collaborative Filtering Recommender System based on the similarity of the user.
 
 " />
-    <meta property="og:description" content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam imperdiet urna eu dolor placerat varius. Vivamus eros augue, consequat id scelerisque nec, fringilla in est. Proin pellentesque malesuada mauris, quis aliquam augue vestibulum ac.
+    <meta property="og:description" content="Previously I built a very simple data set based on just Pandas manipulation. Now I am looking to build a Collaborative Filtering Recommender System based on the similarity of the user.
 
 " />
     
     <meta name="author" content="Djokester" />
 
     
-    <meta property="og:title" content="The Eternal Lorem Ipsum Placeholder Text Here" />
-    <meta property="twitter:title" content="The Eternal Lorem Ipsum Placeholder Text Here" />
+    <meta property="og:title" content="Building A Recommender System on User-User Collaborative Filtering (MovieLens DataSet)" />
+    <meta property="twitter:title" content="Building A Recommender System on User-User Collaborative Filtering (MovieLens DataSet)" />
     
 
     <!--[if lt IE 9]>
@@ -40,8 +40,8 @@
     <div class="intro-header">    
       <div class="container">
         <div class="post-heading">
-            <h1>The Eternal Lorem Ipsum Placeholder Text Here</h1>
-            <span class="meta">Posted by <a href="/about"> Author Name
+            <h1>Building A Recommender System on User-User Collaborative Filtering (MovieLens DataSet)</h1>
+            <span class="meta">Posted by <a href="/about"> Samriddhi Sinha
             </a> on December 29, 2016
             <a href="/"> { Return to Blog }</a>
             </span>
@@ -57,15 +57,131 @@
  </div>
 
   <div class="entry">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam imperdiet urna eu dolor placerat varius. Vivamus eros augue, consequat id scelerisque nec, fringilla in est. Proin pellentesque malesuada mauris, quis aliquam augue vestibulum ac.</p>
+    <p>Previously I built a very simple data set based on just Pandas manipulation. Now I am looking to build a Collaborative Filtering Recommender System based on the similarity of the user.</p>
 
-<h2 id="the-eternal-lorem-ipsum">The Eternal Lorem Ipsum?</h2>
+<p>We can use many similarity models for this purpose like the Pearson, Cosine etc. But we will just stick to the Eucledian Distance model for this one.</p>
+
+<p>For any information about the Dataset and/or Recommender Systems please refer back to the previous post.</p>
+
 <hr />
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam imperdiet urna eu dolor placerat varius. Vivamus eros augue, consequat id scelerisque nec, fringilla in est. Proin pellentesque malesuada mauris, quis aliquam augue vestibulum ac. Vestibulum ut feugiat nibh. Sed faucibus felis purus, sed convallis leo dictum vehicula.</p>
+<h2 id="getting-started">Getting Started</h2>
 
-<p>Nam maximus tempor feugiat. Mauris tristique imperdiet nulla id egestas. Proin eget lobortis magna. Duis consectetur nibh at elit viverra congue. Ut eu turpis enim. Suspendisse laoreet, diam sed consequat sodales, felis dolor accumsan justo, nec scelerisque mi sem quis dolor. Etiam ornare venenatis massa, a suscipit ex. Ut quis lectus id nibh mattis rutrum. Nunc vel cursus eros, at blandit mi. Vivamus ac posuere libero.</p>
+<p>We will load the data sets firsts.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#column headers for the dataset</span>
+<span class="n">data_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'user id'</span><span class="p">,</span><span class="s">'movie id'</span><span class="p">,</span><span class="s">'rating'</span><span class="p">,</span><span class="s">'timestamp'</span><span class="p">]</span>
+<span class="n">item_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'movie id'</span><span class="p">,</span><span class="s">'movie title'</span><span class="p">,</span><span class="s">'release date'</span><span class="p">,</span><span class="s">'video release date'</span><span class="p">,</span><span class="s">'IMDb URL'</span><span class="p">,</span><span class="s">'unknown'</span><span class="p">,</span><span class="s">'Action'</span><span class="p">,</span><span class="s">'Adventure'</span><span class="p">,</span><span class="s">'Animation'</span><span class="p">,</span><span class="s">'Childrens'</span><span class="p">,</span><span class="s">'Comedy'</span><span class="p">,</span><span class="s">'Crime'</span><span class="p">,</span><span class="s">'Documentary'</span><span class="p">,</span><span class="s">'Drama'</span><span class="p">,</span><span class="s">'Fantasy'</span><span class="p">,</span><span class="s">'Film-Noir'</span><span class="p">,</span><span class="s">'Horror'</span><span class="p">,</span><span class="s">'Musical'</span><span class="p">,</span><span class="s">'Mystery'</span><span class="p">,</span><span class="s">'Romance '</span><span class="p">,</span><span class="s">'Sci-Fi'</span><span class="p">,</span><span class="s">'Thriller'</span><span class="p">,</span><span class="s">'War'</span> <span class="p">,</span><span class="s">'Western'</span><span class="p">]</span>
+<span class="n">user_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'user id'</span><span class="p">,</span><span class="s">'age'</span><span class="p">,</span><span class="s">'gender'</span><span class="p">,</span><span class="s">'occupation'</span><span class="p">,</span><span class="s">'zip code'</span><span class="p">]</span>
 
+<span class="c">#importing the data files onto dataframes </span>
+<span class="n">users</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'Desktop/ml-100k/u.user'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'|'</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">user_cols</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">'latin-1'</span><span class="p">)</span>
+<span class="n">item</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'Desktop/ml-100k/u.item'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'|'</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">item_cols</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">'latin-1'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'Desktop/ml-100k/u.data'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">data_cols</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">'latin-1'</span><span class="p">)</span>
+</code></pre>
+</div>
+<p>We will use the file <strong>u.data</strong> first as it contains User ID, Movie IDs and Ratings. These three elements are all we need for determining the similarity of the users based on their ratings for a particular movie. I will first sort the DataFrame by User ID and then we are going to split the data-set into a training set and a test set (I just need one user for the training).</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">utrain</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s">'user id'</span><span class="p">))[:</span><span class="mi">99832</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">utra</span>
+<span class="k">print</span><span class="p">(</span><span class="n">utrain</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+<span class="n">utest</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s">'user id'</span><span class="p">))[</span><span class="mi">99833</span><span class="p">:]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">utest</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-29-11-50-13.png" alt="image-title-here" class="img-responsive" /></p>
+
+<p>We convert them to a NumPy Array for ease of iteration!</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">utrain</span> <span class="o">=</span> <span class="n">utrain</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'user id'</span><span class="p">,</span> <span class="s">'movie id'</span><span class="p">,</span> <span class="s">'rating'</span><span class="p">])</span>
+<span class="n">utest</span> <span class="o">=</span> <span class="n">utest</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'user id'</span><span class="p">,</span> <span class="s">'movie id'</span><span class="p">,</span> <span class="s">'rating'</span><span class="p">])</span>
+</code></pre>
+</div>
+<p>Create a <strong>users_list</strong> which is a <strong>list of users</strong> that contains a <strong>list of movies</strong> rated by him. This part is going to greatly compromise on the program time unfortunately!</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">users_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">943</span><span class="p">):</span>
+    <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">utrain</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">utrain</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+            <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">utrain</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="n">utrain</span> <span class="o">=</span> <span class="n">utrain</span><span class="p">[</span><span class="n">j</span><span class="p">:]</span>
+    <span class="n">users_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> 
+</code></pre>
+</div>
+
+<h2 id="similarity-scores">Similarity Scores</h2>
+<p>Define a Function by the Name of <strong>EucledianScore</strong>. The purpose of the EucledianScore is to measure the similarity between two users based on their ratings given to movies that they have both in common. But what if the users have just one movie in common? In my opinion having more movies in common is a great sign of similarity. So if users have less than 4 movies in common then we assign them a high <strong>EucledianScore</strong>.</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">EucledianScore</span><span class="p">(</span><span class="n">train_user</span><span class="p">,</span> <span class="n">test_user</span><span class="p">):</span>
+    <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">test_user</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">train_user</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+                <span class="n">score</span><span class="o">=</span> <span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span><span class="o">*</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+                <span class="n">count</span><span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>        
+            <span class="nb">sum</span> <span class="o">=</span> <span class="nb">sum</span> <span class="o">+</span> <span class="n">score</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">count</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">):</span>
+        <span class="nb">sum</span> <span class="o">=</span> <span class="mi">1000000</span>           
+    <span class="k">return</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">))</span>
+</code></pre>
+</div>
+<p>Now we will iterate over <strong>users_list</strong> and find the similarity of the users to the <strong>test_user</strong> by means of this function and append the <strong>EucledianScore</strong> along with the <strong>User ID</strong> to a separate list <strong>score_list</strong>. We then convert it first to a DataFrame, sort it by the EucledianScore and finally convert it to a NumPy Array <strong>score_matrix</strong> for the ease of iteration.</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">score_list</span> <span class="o">=</span> <span class="p">[]</span>               
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">942</span><span class="p">):</span>
+    <span class="n">score_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">EucledianScore</span><span class="p">(</span><span class="n">users_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">utest</span><span class="p">)])</span>
+
+<span class="n">score</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">score_list</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'user id'</span><span class="p">,</span><span class="s">'Eucledian Score'</span><span class="p">])</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">score</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s">'Eucledian Score'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+<span class="n">score_matrix</span> <span class="o">=</span> <span class="n">score</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
+</code></pre>
+</div>
+
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-29-14-13-031.png" alt="image-title-here" class="img-responsive" /></p>
+
+<p>Now we see that the user with ID 310 has the lowest <strong>Eucledian score</strong> and hence the highest similarity. So now we need to obtain the list of movies that are <strong>not common</strong> between the two users. Make two lists. Get the full list of movies which are there on USER_ID 310. And then the list of common movies. Convert these lists into sets and get the list of movies to be recommended.</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">score_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">common_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">full_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">utest</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">users_list</span><span class="p">[</span><span class="n">user</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="n">common_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">full_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">common_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">common_list</span><span class="p">)</span>  
+<span class="n">full_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">full_list</span><span class="p">)</span>
+<span class="n">recommendation</span> <span class="o">=</span> <span class="n">full_list</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">common_list</span><span class="p">)</span>
+</code></pre>
+</div>
+<h2 id="stringing-them-together">Stringing them Together</h2>
+
+<p>Now we need to create a compiled list of the movies along with their mean ratings. Merge the item and data files.Then <strong>groupby</strong> movie titles, select the columns you need and then find the mean ratings of each movie. Then express the dataframe as a NumPy Array.</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">item_list</span> <span class="o">=</span> <span class="p">(((</span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">item</span><span class="p">,</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s">'movie id'</span><span class="p">))</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'movie title'</span><span class="p">)))[</span><span class="s">'movie id'</span><span class="p">,</span> <span class="s">'movie title'</span><span class="p">,</span> <span class="s">'rating'</span><span class="p">]</span>
+<span class="n">item_list</span> <span class="o">=</span> <span class="n">item_list</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">item_list</span><span class="p">[</span><span class="s">'movie title'</span><span class="p">]</span> <span class="o">=</span> <span class="n">item_list</span><span class="o">.</span><span class="n">index</span>
+<span class="n">item_list</span> <span class="o">=</span> <span class="n">item_list</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
+</code></pre>
+</div>
+<p>Now we find the movies on <strong>item_list</strong> by IDs from recommendation. Then append them to a separate list.</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">recommendation_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">recommendation</span><span class="p">:</span>
+    <span class="n">recommendation_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item_list</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    
+<span class="n">recommendation</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">recommendation_list</span><span class="p">,</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">'movie id'</span><span class="p">,</span><span class="s">'mean rating'</span> <span class="p">,</span><span class="s">'movie title'</span><span class="p">]))</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s">'mean rating'</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">recommendation</span><span class="p">[[</span><span class="s">'mean rating'</span><span class="p">,</span><span class="s">'movie title'</span><span class="p">]])</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-29-16-41-54.png?w=740" alt="image-title-here" class="img-responsive" /></p>
+
+<p>Print them out and your recommendations are ready!</p>
 
   </div>
 

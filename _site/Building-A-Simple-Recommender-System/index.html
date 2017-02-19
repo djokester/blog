@@ -64,12 +64,12 @@
 
 <p>One of the most common datasets that is available on the internet for building a <strong>Recommender System</strong> is the <strong>MovieLens DataSet</strong>. Do a simple google search and see how many GitHub projects pop up. The data is obtained from the <a href="https://movielens.org/">MovieLens</a> website during the seven-month period from September 19th, 1997 through April 22nd, 1998.</p>
 
-<p>What is a recommender system then?
-In ideology it is a machine learning prototype that learns how users’ choice of products (in this case movies)  vary with the users characteristics and recommends a product accordingly. For example a 15 year old kid is more likely to watch the upcoming The Lego Batman Movie than someone who is say 35 years old. Or maybe girls would prefer to watch The Notebook more than guys.</p>
+<p>What is a <strong>*recommender system</strong> then?
+In ideology it is a machine learning prototype that learns how users’ choice of products (in this case movies)  vary with the users characteristics and recommends a product accordingly. For example a 15 year old kid is more likely to watch the upcoming <strong>The Lego Batman Movie</strong> than someone who is say 35 years old. Or maybe girls would prefer to watch <strong>The Notebook</strong> more than guys.</p>
 
-<p>But simple recommender systems do exist. If I pull out a list of Movies from IMDB along with their ratings then all I need to do is sort the movies first according to ratings and then according to the number of people who saw the movie. This would enable me to give people a generalized recommendation but not a personalised recommendation. I will use two terms users and product extensively throughout this post for comfort. Products are the items to be recommended in this case it is movies. Users are the people the recommendation is being made to.</p>
+<p>But simple recommender systems do exist. If I pull out a list of <strong>Movies from IMDB</strong> along with their ratings then all I need to do is sort the movies first according to ratings and then according to the number of people who saw the movie. This would enable me to give people a <strong>generalized recommendation</strong> but not a <strong>personalised recommendation</strong>. I will use two terms users and product extensively throughout this post for comfort. Products are the items to be recommended in this case it is movies. Users are the people the recommendation is being made to.</p>
 
-<p>I would be building the recommender system in Python. There are three types of recommender systems possible.</p>
+<p>I would be building the recommender system in <strong>Python</strong>. There are three types of recommender systems possible.</p>
 
 <ol>
   <li><strong>The Simple Recommender</strong>: Just filter the movies based on their popularity/ratings and we are good to go. All we need to do is load them up on Pandas and sort them.</li>
@@ -79,7 +79,7 @@ In ideology it is a machine learning prototype that learns how users’ choice o
       <li>the similarity in between two items. In this case factors like genre come into play.</li>
     </ul>
   </li>
-  <li><strong>Recommendation Based on Content Based Filtering</strong>: Content based filtering is based on the users choice of products. If you like the TV Series Game of Thrones thn you might like the series Vikings</li>
+  <li><strong>Recommendation Based on Content Based Filtering</strong>: Content based filtering is based on the users choice of products. If you like the TV Series <strong>Game of Thrones</strong> thn you might like the series Vikings</li>
 </ol>
 
 <h2 id="requirements">Requirements</h2>
@@ -93,7 +93,7 @@ In ideology it is a machine learning prototype that learns how users’ choice o
 
 <h2 id="the-dataset">The Dataset</h2>
 
-<p>This is the popular <a href="https://grouplens.org/datasets/movielens/100k/">MovieLens</a> dataset. It has multiple CSV  files zipped into a folder. We shall be working with these files</p>
+<p>This is the popular <a href="https://grouplens.org/datasets/movielens/100k/">MovieLens</a> dataset. It has multiple <strong>CSV</strong>  files zipped into a folder. We shall be working with these files</p>
 
 <ol>
   <li>u.data: A  consolidated data about users and the movie ratings. This is a tab separated list of <strong>user id-item id-rating-timestamp</strong></li>
@@ -103,7 +103,7 @@ In ideology it is a machine learning prototype that learns how users’ choice o
 
 <h2 id="loading-the-dataset">Loading the Dataset</h2>
 
-<p>We will load the dataset with Pandas onto Dataframes data, item and user</p>
+<p>We will load the dataset with Pandas onto Dataframes <strong><em>data, item</em></strong> and <strong><em>user</em></strong></p>
 
 <div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -159,7 +159,7 @@ In ideology it is a machine learning prototype that learns how users’ choice o
 
 <h2 id="creating-a-simple-recommendation-engine-with-pandas">Creating A Simple Recommendation Engine with Pandas</h2>
 
-<p>First we merge the three dataframes into one single dataframe</p>
+<p>First we <strong>merge</strong> the three dataframes into one single dataframe</p>
 
 <div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#Create one data frame from the three</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span><span class="n">users</span><span class="p">)</span>
@@ -168,7 +168,7 @@ In ideology it is a machine learning prototype that learns how users’ choice o
 </div>
 <p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-16-01-50.png?w=740" alt="image-title-here" class="img-responsive" /></p>
 
-<p>Next we use groupby to group the movies by their titles. Then we use the size function to returns the total number of entries under each movie title. This will help us get the number of people who rated the movie/ the number of ratings.</p>
+<p>Next we use <strong>groupby</strong> to group the movies by their titles. Then we use the size function to returns the total number of entries under each movie title. This will help us get the number of people who rated the movie/ the number of ratings.</p>
 <div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">ratings_total</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'movie title'</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 <span class="k">print</span><span class="p">(</span><span class="n">ratings_total</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </code></pre>
@@ -176,13 +176,13 @@ In ideology it is a machine learning prototype that learns how users’ choice o
 
 <p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-23-57-45.png" alt="image-title-here" class="img-responsive" /></p>
 
-<p>Next we try to take the mean ratings of each movie using the mean function. First we groupby movie title. From the resulting dataframe we select only the movie title and the rating headers. Then we use the mean function on them.</p>
+<p>Next we try to take the <strong><em>mean ratings</em></strong> of each movie using the <strong>mean</strong> function. First we <strong>groupby</strong> <em>movie title</em>. From the resulting dataframe we select only the <em>movie title</em> and the <em>rating headers</em>. Then we use the mean function on them.</p>
 <div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">ratings_mean</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'movie title'</span><span class="p">))[</span><span class="s">'movie title'</span><span class="p">,</span><span class="s">'rating'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="k">print</span><span class="p">(</span><span class="n">ratings_mean</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </code></pre>
 </div>
 
-<p>Now if you check ratings_total then you will find its a Series and not a Data Frame. So we will convert that into a dataframe. In the ratings_mean we will see that the movie title has been converted from a column to an index. So we make that a column again.</p>
+<p>Now if you check <em>ratings_total</em> then you will find <strong><em>its a Series and not a Data Frame</em></strong>. So we will convert that into a dataframe. In the <em>ratings_mean</em> we will see that the <strong><em>movie title has been converted from a column to an index</em></strong>. So we make that a column again.</p>
 <div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#modify the dataframes so that we can merge the two</span>
 <span class="n">ratings_total</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">'movie title'</span><span class="p">:</span><span class="n">ratings_total</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
 <span class="s">'total ratings'</span><span class="p">:</span> <span class="n">ratings_total</span><span class="o">.</span><span class="n">values</span><span class="p">})</span>
@@ -213,7 +213,7 @@ In ideology it is a machine learning prototype that learns how users’ choice o
 
 <p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-26-12-13-23.png" alt="image-title-here" class="img-responsive" /></p>
 
-<p>So there is your Simple Recommender!</p>
+<p>So there is your <strong>Simple Recommender!</strong></p>
 
 <p>For the source code you can visit this <a href="https://github.com/djokester/RecommenderSystemMovieLens">Repository</a></p>
 
