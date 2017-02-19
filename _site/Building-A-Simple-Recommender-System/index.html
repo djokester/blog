@@ -105,6 +105,118 @@ In ideology it is a machine learning prototype that learns how users’ choice o
 
 <p>We will load the dataset with Pandas onto Dataframes data, item and user</p>
 
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c">#column headers for the dataset</span>
+<span class="n">data_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'user id'</span><span class="p">,</span><span class="s">'movie id'</span><span class="p">,</span><span class="s">'rating'</span><span class="p">,</span><span class="s">'timestamp'</span><span class="p">]</span>
+<span class="n">item_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'movie id'</span><span class="p">,</span><span class="s">'movie title'</span><span class="p">,</span><span class="s">'release date'</span><span class="p">,</span>
+<span class="s">'video release date'</span><span class="p">,</span><span class="s">'IMDb URL'</span><span class="p">,</span><span class="s">'unknown'</span><span class="p">,</span><span class="s">'Action'</span><span class="p">,</span>
+<span class="s">'Adventure'</span><span class="p">,</span><span class="s">'Animation'</span><span class="p">,</span><span class="s">'Childrens'</span><span class="p">,</span><span class="s">'Comedy'</span><span class="p">,</span><span class="s">'Crime'</span><span class="p">,</span>
+<span class="s">'Documentary'</span><span class="p">,</span><span class="s">'Drama'</span><span class="p">,</span><span class="s">'Fantasy'</span><span class="p">,</span><span class="s">'Film-Noir'</span><span class="p">,</span><span class="s">'Horror'</span><span class="p">,</span>
+<span class="s">'Musical'</span><span class="p">,</span><span class="s">'Mystery'</span><span class="p">,</span><span class="s">'Romance '</span><span class="p">,</span><span class="s">'Sci-Fi'</span><span class="p">,</span><span class="s">'Thriller'</span><span class="p">,</span>
+<span class="s">'War'</span> <span class="p">,</span><span class="s">'Western'</span><span class="p">]</span>
+<span class="n">user_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'user id'</span><span class="p">,</span><span class="s">'age'</span><span class="p">,</span><span class="s">'gender'</span><span class="p">,</span><span class="s">'occupation'</span><span class="p">,</span>
+<span class="s">'zip code'</span><span class="p">]</span>
+
+<span class="c">#importing the data files onto dataframes</span>
+<span class="n">users</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'Desktop/ml-100k/u.user'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'|'</span><span class="p">,</span>
+<span class="n">names</span><span class="o">=</span><span class="n">user_cols</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">'latin-1'</span><span class="p">)</span>
+<span class="n">item</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'Desktop/ml-100k/u.item'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'|'</span><span class="p">,</span>
+<span class="n">names</span><span class="o">=</span><span class="n">item_cols</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">'latin-1'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">'Desktop/ml-100k/u.data'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">'</span><span class="se">\t</span><span class="s">'</span><span class="p">,</span>
+<span class="n">names</span><span class="o">=</span><span class="n">data_cols</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">'latin-1'</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>Let us go and check out the heads of these files</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#printing the head of these dataframes</span>
+<span class="k">print</span><span class="p">(</span><span class="n">users</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-49-591.png" alt="image-title-here" class="img-responsive" /></p>
+
+<p>A look at the basic details of these data files</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">users</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-51-48.png" alt="image-title-here" class="img-responsive" /></p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-52-06.png" alt="image-title-here" class="img-responsive" /></p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-52-25.png" alt="image-title-here" class="img-responsive" /></p>
+
+<h2 id="creating-a-simple-recommendation-engine-with-pandas">Creating A Simple Recommendation Engine with Pandas</h2>
+
+<p>First we merge the three dataframes into one single dataframe</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#Create one data frame from the three</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span><span class="n">users</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-16-01-50.png?w=740" alt="image-title-here" class="img-responsive" /></p>
+
+<p>Next we use groupby to group the movies by their titles. Then we use the size function to returns the total number of entries under each movie title. This will help us get the number of people who rated the movie/ the number of ratings.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">ratings_total</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'movie title'</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ratings_total</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</code></pre>
+</div>
+
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-23-57-45.png" alt="image-title-here" class="img-responsive" /></p>
+
+<p>Next we try to take the mean ratings of each movie using the mean function. First we groupby movie title. From the resulting dataframe we select only the movie title and the rating headers. Then we use the mean function on them.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">ratings_mean</span> <span class="o">=</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'movie title'</span><span class="p">))[</span><span class="s">'movie title'</span><span class="p">,</span><span class="s">'rating'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ratings_mean</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</code></pre>
+</div>
+
+<p>Now if you check ratings_total then you will find its a Series and not a Data Frame. So we will convert that into a dataframe. In the ratings_mean we will see that the movie title has been converted from a column to an index. So we make that a column again.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="c">#modify the dataframes so that we can merge the two</span>
+<span class="n">ratings_total</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s">'movie title'</span><span class="p">:</span><span class="n">ratings_total</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+<span class="s">'total ratings'</span><span class="p">:</span> <span class="n">ratings_total</span><span class="o">.</span><span class="n">values</span><span class="p">})</span>
+<span class="n">ratings_mean</span><span class="p">[</span><span class="s">'movie title'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ratings_mean</span><span class="o">.</span><span class="n">index</span>
+</code></pre>
+</div>
+
+<p>Now we head for the merging part. Now we sort the values by the total rating and this helps us sort the data frame by the number of people who viewed the movie</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ratings_mean</span><span class="p">,</span> <span class="n">ratings_total</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s">'total ratings'</span><span class="p">,</span>
+<span class="n">ascending</span><span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">final</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-26-11-52-36.png" alt="image-title-here" class="img-responsive" /></p>
+
+<p>We need to look at the basic characteristics of the data to determine the minimum cutoff of total ratings. Because its not reliable to recommend a movie with a high mean rating that has been rated by only 10 people.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">final</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+</code></pre>
+</div>
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-26-12-01-40.png" alt="image-title-here" class="img-responsive" /></p>
+
+<p>I see the 75th percentile is at around 80.I decide to set the cutoff at 100. With a bit of slicing I am able to ascertain that the 340th element has a total rating of approximately 100. So next try to cut off the remaining data. Then we sort the new Data frame with respect to the mean ratings. And we are done building the recommender system. Print out the head of the data frame to give the top 5 recommendations.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s">'rating'</span><span class="p">,</span>
+<span class="n">ascending</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">final</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</code></pre>
+</div>
+
+<p><img src="https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-26-12-13-23.png" alt="image-title-here" class="img-responsive" /></p>
+
+<p>So there is your Simple Recommender!</p>
+
+<p>For the source code you can visit this <a href="https://github.com/djokester/RecommenderSystemMovieLens">Repository</a></p>
+
 
   </div>
 

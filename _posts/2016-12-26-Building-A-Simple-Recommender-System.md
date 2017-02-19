@@ -67,3 +67,92 @@ names=item_cols, encoding='latin-1')
 data = pd.read_csv('Desktop/ml-100k/u.data', sep='\t',
 names=data_cols, encoding='latin-1')
 ```
+
+Let us go and check out the heads of these files
+
+```python 
+#printing the head of these dataframes
+print(users.head())
+print(item.head())
+print(data.head())
+```
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-49-591.png){:class="img-responsive"}
+
+A look at the basic details of these data files
+
+```python
+print(users.info())
+```
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-51-48.png){:class="img-responsive"}
+
+```python
+print(item.info())
+```
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-52-06.png){:class="img-responsive"}
+
+```python
+print(data.info())
+```
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-15-52-25.png){:class="img-responsive"}
+
+
+## Creating A Simple Recommendation Engine with Pandas
+
+First we merge the three dataframes into one single dataframe
+
+```python
+#Create one data frame from the three
+dataset = pd.merge(pd.merge(item, data),users)
+print(dataset.head())
+```
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-16-01-50.png?w=740){:class="img-responsive"}
+
+Next we use groupby to group the movies by their titles. Then we use the size function to returns the total number of entries under each movie title. This will help us get the number of people who rated the movie/ the number of ratings.
+```python
+ratings_total = dataset.groupby('movie title').size()
+print(ratings_total.head())
+```
+
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-25-23-57-45.png){:class="img-responsive"}
+
+Next we try to take the mean ratings of each movie using the mean function. First we groupby movie title. From the resulting dataframe we select only the movie title and the rating headers. Then we use the mean function on them.
+```python
+ratings_mean = (dataset.groupby('movie title'))['movie title','rating'].mean()
+print(ratings_mean.head())
+```
+
+Now if you check ratings_total then you will find its a Series and not a Data Frame. So we will convert that into a dataframe. In the ratings_mean we will see that the movie title has been converted from a column to an index. So we make that a column again.
+```python
+#modify the dataframes so that we can merge the two
+ratings_total = pd.DataFrame({'movie title':ratings_total.index,
+'total ratings': ratings_total.values})
+ratings_mean['movie title'] = ratings_mean.index
+```
+
+Now we head for the merging part. Now we sort the values by the total rating and this helps us sort the data frame by the number of people who viewed the movie
+```python
+final = pd.merge(ratings_mean, ratings_total).sort_values(by = 'total ratings',
+ascending= False)
+print(final.head())
+```
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-26-11-52-36.png){:class="img-responsive"}
+
+We need to look at the basic characteristics of the data to determine the minimum cutoff of total ratings. Because its not reliable to recommend a movie with a high mean rating that has been rated by only 10 people.
+```python
+print(final.describe())
+```
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-26-12-01-40.png){:class="img-responsive"}
+
+I see the 75th percentile is at around 80.I decide to set the cutoff at 100. With a bit of slicing I am able to ascertain that the 340th element has a total rating of approximately 100. So next try to cut off the remaining data. Then we sort the new Data frame with respect to the mean ratings. And we are done building the recommender system. Print out the head of the data frame to give the top 5 recommendations.
+```python
+final = final[:300].sort_values(by = 'rating',
+ascending = False)
+print(final.head())
+```
+
+![image-title-here](https://acodeforthought.files.wordpress.com/2016/12/screenshot-from-2016-12-26-12-13-23.png){:class="img-responsive"}
+
+So there is your Simple Recommender! 
+
+For the source code you can visit this [Repository](https://github.com/djokester/RecommenderSystemMovieLens)
+
