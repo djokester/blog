@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Comparison and Analysis of Part of Speech Taggers- Individual Taggers – Djokester – A Code for Thought.</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="This post compares the various Part of Speech Taggers when taken individually in terms of the time taken by them and their accuracy.
+
+" />
+    <meta property="og:description" content="This post compares the various Part of Speech Taggers when taken individually in terms of the time taken by them and their accuracy.
+
+" />
+    
+    <meta name="author" content="Djokester" />
+
+    
+    <meta property="og:title" content="Comparison and Analysis of Part of Speech Taggers- Individual Taggers" />
+    <meta property="twitter:title" content="Comparison and Analysis of Part of Speech Taggers- Individual Taggers" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="alternate" type="application/rss+xml" title="Djokester - A Code for Thought." href="/feed.xml" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+  </head>
+
+  <body>
+    
+    
+    <div class="intro-header">    
+      <div class="container">
+        <div class="post-heading">
+            <h1>Comparison and Analysis of Part of Speech Taggers- Individual Taggers</h1>
+            <span class="meta">Posted by <a href="/about"> Samriddhi Sinha
+            </a> on March 17, 2017
+            <a href="/"> { Return to Blog }</a>
+            </span>
+        </div>
+            
+      </div>
+    </div>
+    
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+ <div class="space-extra-small">
+ </div>
+
+  <div class="entry">
+    <p>This post compares the various Part of Speech Taggers when taken individually in terms of the time taken by them and their accuracy.</p>
+
+<hr />
+<h1 id="pos-taggers">POS Taggers</h1>
+
+<p><strong>Part of Speech Tagging</strong> refers to marking a word in a text with its corresponding part of speech, based on both the definition and context.</p>
+
+<p>Basic Types of POS Taggers:</p>
+
+<ul>
+  <li><strong>N-Gram Taggers</strong>: Unigram, Bigram, Trigram taggers and so on.</li>
+  <li><strong>HMM Tagger</strong>: A tagger based on Hidden Markov Models.</li>
+  <li><strong>Brill Tagger</strong>: A supervised-learning tagger th reduce the error</li>
+  <li><strong>TnT Tagger</strong>: TnT stands for Trigrams’n’Tags</li>
+  <li><strong>Regex Tagger</strong>: Regex Based Tagger meant for Tagging based on word inflections.</li>
+  <li><strong>Default Tagger</strong>: Return a default tag for every word.</li>
+</ul>
+
+<h4 id="what-goes-up-for-evaluation">What goes up for evaluation?</h4>
+<p>Six POS Taggers would go up for evaluation. A brief description for each tagger has been enclosed under their respective subheadings.</p>
+
+<p>The corpus chosen for the purpose is the TreeBank corpus. The Brown corpus didn’t yield results with TnT and HMM tagger. The following code snippet shows the loading of the dataset and it’s splitting</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">from</span> <span class="nn">nltk.tag</span> <span class="kn">import</span> <span class="n">hmm</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">treebank</span>
+<span class="kn">from</span> <span class="nn">nltk.tag.brill</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">nltk.tag.brill_trainer</span> <span class="kn">as</span> <span class="nn">bt</span>
+<span class="kn">from</span> <span class="nn">nltk.tag</span> <span class="kn">import</span> <span class="n">tnt</span>
+<span class="kn">import</span> <span class="nn">time</span> 
+
+<span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">treebank</span><span class="o">.</span><span class="n">tagged_sents</span><span class="p">())</span><span class="o">*</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">treebank</span><span class="o">.</span><span class="n">tagged_sents</span><span class="p">()[:</span><span class="n">size</span><span class="p">]</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">treebank</span><span class="o">.</span><span class="n">tagged_sents</span><span class="p">()[</span><span class="n">size</span><span class="p">:]</span>
+</code></pre>
+</div>
+<p>Time is measured using the time module</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="s">"""
+Code Snippet whose time is to be measured. 
+
+"""</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">timeElapsed</span> <span class="o">=</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span>
+</code></pre>
+</div>
+<h5 id="unigram-tagger">Unigram Tagger</h5>
+<p><strong><em>Unigram Tagger</em></strong> tags each token with the tag that is most likely to go with the token’s type based on a training corpus.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">ug</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">UnigramTagger</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ug</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ug</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+</code></pre>
+</div>
+
+<h5 id="bigram-tagger">Bigram Tagger</h5>
+<p>In addition to considering the token’s type, a <strong><em>Bigram Tagger</em></strong> also brings into consideration the part-of-speech tag of the preceding token.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">bg</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">BigramTagger</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">bg</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bg</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+</code></pre>
+</div>
+<h5 id="trigram-tagger">Trigram Tagger</h5>
+<p>In addition to considering the token’s type, a <strong><em>Trigram Tagger</em></strong> also brings into consideration the part-of-speech tags of the preceding two tokens.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">tg</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">TrigramTagger</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+</code></pre>
+</div>
+<h5 id="hmm-tagger">HMM Tagger</h5>
+<p>An HMM-based POS Tagging method</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">nltk.tag</span> <span class="kn">import</span> <span class="n">hmm</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">hmm</span><span class="o">.</span><span class="n">HiddenMarkovModelTrainer</span><span class="p">()</span>
+<span class="n">tagger</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tagger</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tagger</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+</code></pre>
+</div>
+<h5 id="tnt-tagger">TnT Tagger</h5>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">nltk.tag</span> <span class="kn">import</span> <span class="n">tnt</span>
+
+<span class="n">tnt_tagger</span> <span class="o">=</span> <span class="n">tnt</span><span class="o">.</span><span class="n">TnT</span><span class="p">()</span>
+<span class="n">tnt_tagger</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tnt_tagger</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tnt_tagger</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+</code></pre>
+</div>
+<h5 id="brill-tagger">Brill Tagger</h5>
+<p>There are a lot of Brill Tagger implementions and versions. This is one of the more accurate versions from what I have read in comparison to the FastBrillTagger. However given the amount of time it takes to train, I am not a huge fan.</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">nltk.tag.brill</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">nltk.tag.brill_trainer</span> <span class="kn">as</span> <span class="nn">bt</span>
+
+<span class="n">Template</span><span class="o">.</span><span class="n">_cleartemplates</span><span class="p">()</span>
+<span class="n">templates</span> <span class="o">=</span> <span class="n">fntbl37</span><span class="p">()</span>
+<span class="n">defaultTagger</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">DefaultTagger</span><span class="p">(</span><span class="s">'NN'</span><span class="p">)</span>
+<span class="n">tagger</span> <span class="o">=</span> <span class="n">bt</span><span class="o">.</span><span class="n">BrillTaggerTrainer</span><span class="p">(</span><span class="n">defaultTagger</span><span class="p">,</span> <span class="n">templates</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">tagger</span> <span class="o">=</span> <span class="n">tagger</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">max_rules</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tagger</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tagger</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+</code></pre>
+</div>
+
+<p><strong><em>How did we measure the time for a particular tagger?</em></strong>
+We took the code for training and testing the tagger into consideration while evaluating the time taken.</p>
+
+<p>A glimpse at the code for UnigramTagger</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">ug</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">UnigramTagger</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ug</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+<span class="n">time_taken</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h4 id="the-results">The Results</h4>
+
+<table class="mbtablestyle">
+  <thead>
+    <tr>
+      <th>Tagger</th>
+      <th> </th>
+      <th>Time Taken(sec)</th>
+      <th> </th>
+      <th>Accuracy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Unigram</td>
+      <td> </td>
+      <td>2.6861190795898438</td>
+      <td> </td>
+      <td>0.8639185750636132</td>
+    </tr>
+    <tr>
+      <td>Bigram</td>
+      <td> </td>
+      <td>3.0700016021728516</td>
+      <td> </td>
+      <td>0.13567430025445293</td>
+    </tr>
+    <tr>
+      <td>Trigram</td>
+      <td> </td>
+      <td>3.2834136486053467</td>
+      <td> </td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <td>HMM</td>
+      <td> </td>
+      <td>18.131709337234497</td>
+      <td> </td>
+      <td>0.4255470737913486</td>
+    </tr>
+    <tr>
+      <td>TnT</td>
+      <td> </td>
+      <td>172.80279874801636</td>
+      <td> </td>
+      <td>0.881323155216285</td>
+    </tr>
+    <tr>
+      <td>Brill</td>
+      <td> </td>
+      <td>2437.3220386505127</td>
+      <td> </td>
+      <td>0.7363867684478371</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="accuracy-of-taggers">Accuracy of Taggers</h5>
+<p><img src="../images/posts/s1.png" alt="Accuracy of Taggers" title="Accuracy of Taggers" /></p>
+
+<h5 id="time-taken-by-taggers">Time Taken By Taggers</h5>
+<p><img src="../images/posts/s2.png" alt="Time Taken by Taggers" title="Time Taken by~~~~ Taggers" /></p>
+
+<p>The next post deals with Regex and Default Taggers, along with their roles serving as a backoff tagger.</p>
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'samriddhisinha';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+            <div class="svg-icon">
+          
+<a href="mailto:samriddhisinha.iitkgp@gmail.com"><i class="icon-envelope icon-2x"></i></a>
+<a href="https://www.facebook.com/samriddhi.sinha.7"><i class="icon-facebook-sign icon-2x"></i></a>
+
+<a href="https://github.com/djokester"><i class="icon-github icon-2x"></i></a>
+<a href="https://instagram.com/samriddhidjokester"><i class="icon-instagram icon-2x"></i></a>
+
+
+
+<a href="https://www.twitter.com/samdjokester"><i class="icon-twitter icon-2x"></i></a>
+
+
+
+
+            </div>
+        </footer>
+      </div>
+    </div>
+
+
+    
+
+  </body>
+</html>
