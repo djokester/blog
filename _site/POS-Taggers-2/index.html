@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Comparison and Analysis of Part of Speech Taggers - The Importance of A Regex Tagger – Djokester – A Code for Thought.</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="This post compares the various Part of Speech Taggers when taken individually in terms of the time taken by them and their accuracy.
+
+" />
+    <meta property="og:description" content="This post compares the various Part of Speech Taggers when taken individually in terms of the time taken by them and their accuracy.
+
+" />
+    
+    <meta name="author" content="Djokester" />
+
+    
+    <meta property="og:title" content="Comparison and Analysis of Part of Speech Taggers - The Importance of A Regex Tagger" />
+    <meta property="twitter:title" content="Comparison and Analysis of Part of Speech Taggers - The Importance of A Regex Tagger" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link rel="alternate" type="application/rss+xml" title="Djokester - A Code for Thought." href="/feed.xml" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+  </head>
+
+  <body>
+    
+    
+    <div class="intro-header">    
+      <div class="container">
+        <div class="post-heading">
+            <h1>Comparison and Analysis of Part of Speech Taggers - The Importance of A Regex Tagger</h1>
+            <span class="meta">Posted by <a href="/about"> Samriddhi Sinha
+            </a> on March 18, 2017
+            <a href="/"> { Return to Blog }</a>
+            </span>
+        </div>
+            
+      </div>
+    </div>
+    
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+ <div class="space-extra-small">
+ </div>
+
+  <div class="entry">
+    <p>This post compares the various Part of Speech Taggers when taken individually in terms of the time taken by them and their accuracy.</p>
+
+<hr />
+<h1 id="regex-tagger">Regex Tagger</h1>
+
+<p>Let us begin by introducing the <strong><em>Default Tagger</em></strong>. The default tagger allots a default value, mostly “NN” to all the (untagged) tokens.</p>
+
+<p>What purpose does that serve?</p>
+
+<p>In a sentence singular Nouns like <strong><em>Manish</em></strong> or <strong><em>Samriddhi</em></strong> are very hard to tag. They usually go untagged when a vast majority of the POS Taggers are applied and thereby compromising on the accuracy.</p>
+
+<p>The Default Tagger helps us make an intelligent guess thereby significantly improving the accuracy rating. It is pretty useless on it’s own but has tremendous potential as a backoff.</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">nltk</span>
+<span class="n">defaultTagger</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">DefaultTagger</span><span class="p">(</span><span class="s">'NN'</span><span class="p">)</span>
+</code></pre>
+</div>
+<p>The Regex also is another one of those Taggers which can serve no purpose on it’s own, however as a Backoff they can make drastic improvements in the accuracy scores.</p>
+
+<h4 id="implementation-of-a-regex-tagger">Implementation of a Regex Tagger</h4>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">nltk</span>
+<span class="n">patterns</span> <span class="o">=</span> <span class="p">[(</span><span class="s">r'.*ed$'</span><span class="p">,</span> <span class="s">'VBD'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'.*es$'</span><span class="p">,</span> <span class="s">'VBZ'</span><span class="p">),(</span><span class="s">r'.*ould$'</span><span class="p">,</span> <span class="s">'MD'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'.*</span><span class="err">\</span><span class="s">’s$'</span><span class="p">,</span> <span class="s">'NN$'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'.*s$'</span><span class="p">,</span> <span class="s">'NNS'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'(The|the|A|a|An|an)$'</span><span class="p">,</span> <span class="s">'AT'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'.*able$'</span><span class="p">,</span> <span class="s">'JJ'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'.*ly$'</span><span class="p">,</span> <span class="s">'RB'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'.*s$'</span><span class="p">,</span> <span class="s">'NNS'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'^-?[0-9]+(.[0-9]+)?$'</span><span class="p">,</span> <span class="s">'CD'</span><span class="p">),</span>
+<span class="p">(</span><span class="s">r'.*'</span><span class="p">,</span> <span class="s">'NN'</span><span class="p">)]</span>
+<span class="n">regexpTagger</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">RegexpTagger</span><span class="p">(</span><span class="n">patterns</span><span class="p">)</span>
+</code></pre>
+</div>
+<p>The main purpose of Regex taggers are</p>
+
+<ul>
+  <li>To detect and tag numerical entities: Its very difficult to make other POS Tagger</li>
+  <li>To tag according to detected inflection. This comes in very handy while tagging. Especially in languages like Hindi and Bengali where strong inflection based rules are present (Hindi has 150+ rules), accuracy ratings of around 0.4-0.6 can be achieved based on the Regex Taggers  alone.</li>
+</ul>
+
+<h4 id="studying-the-effects-of-regex-taggers">Studying the Effects of Regex Taggers</h4>
+
+<p>We are going to check how the Regex Tagger improves the accuracy of other taggers when used as a backoff along with the Default tagger.
+Code Snippet</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="n">tag1</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">RegexpTagger</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">backoff</span> <span class="o">=</span> <span class="n">defaultTagger</span><span class="p">)</span>
+<span class="n">tag2</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">UnigramTagger</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span> <span class="n">tag1</span><span class="p">)</span>
+<span class="n">tag3</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">BigramTagger</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span> <span class="n">tag1</span><span class="p">)</span>  
+<span class="n">tag4</span> <span class="o">=</span> <span class="n">nltk</span><span class="o">.</span><span class="n">TrigramTagger</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span> <span class="n">tag1</span><span class="p">)</span>
+
+<span class="n">tag5</span> <span class="o">=</span> <span class="n">tnt</span><span class="o">.</span><span class="n">TnT</span><span class="p">()</span>
+<span class="n">tag5</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="n">tag5</span> <span class="o">=</span> <span class="n">tnt</span><span class="o">.</span><span class="n">TnT</span><span class="p">(</span><span class="n">unk</span> <span class="o">=</span> <span class="n">tag1</span><span class="p">,</span> <span class="n">Trained</span><span class="o">=</span><span class="bp">True</span> <span class="p">)</span>
+<span class="n">tag5</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+
+<span class="n">Template</span><span class="o">.</span><span class="n">_cleartemplates</span><span class="p">()</span>
+<span class="n">templates</span> <span class="o">=</span> <span class="n">fntbl37</span><span class="p">()</span>
+<span class="n">tag6</span> <span class="o">=</span> <span class="n">bt</span><span class="o">.</span><span class="n">BrillTaggerTrainer</span><span class="p">(</span><span class="n">tag1</span><span class="p">,</span> <span class="n">templates</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">tag6</span> <span class="o">=</span> <span class="n">tag6</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">max_rules</span><span class="o">=</span><span class="mi">250</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">tag1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span> <span class="c">#0.24274809160305344</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tag2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span> <span class="c">#0.9026972010178117</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tag3</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span> <span class="c">#0.8449872773536896</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tag4</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span> <span class="c">#0.7023918575063614</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tag5</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span> <span class="c">#0.9196946564885496</span>
+<span class="k">print</span><span class="p">(</span><span class="n">tag6</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test</span><span class="p">))</span> <span class="c">#0.788091603053435</span>
+</code></pre>
+</div>
+<p>The results have been highlighted below. We can see the significant increase the Regex Tagger contributes to in case of simple taggers which tag on the basis of simple rules. However we also see that it is unable to improve the scores of Taggers based on Probabilistic and Statistical models much as they leave very few untagged tokens which can be taken up by the backoff tagger.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tagger</th>
+      <th> </th>
+      <th>Backoff Tagger</th>
+      <th> </th>
+      <th>Individual Tagger</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Unigram</td>
+      <td> </td>
+      <td>0.9026972010178117</td>
+      <td> </td>
+      <td>0.8639185750636132</td>
+    </tr>
+    <tr>
+      <td>Bigram</td>
+      <td> </td>
+      <td>0.8449872773536896</td>
+      <td> </td>
+      <td>0.13567430025445293</td>
+    </tr>
+    <tr>
+      <td>Trigram</td>
+      <td> </td>
+      <td>0.7023918575063614</td>
+      <td> </td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <td>TnT</td>
+      <td> </td>
+      <td>0.9196946564885496</td>
+      <td> </td>
+      <td>0.881323155216285</td>
+    </tr>
+    <tr>
+      <td>Brill</td>
+      <td> </td>
+      <td>0.788091603053435</td>
+      <td> </td>
+      <td>0.7363867684478371</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The graph for the accuracy results is as shown below 
+<img src="../images/posts/s3.png" alt="Comparing the Accuracy" title="Comparing the Accuracy after using Regex as Backoff" /></p>
+
+<p>In the next post I will build two Backoff Taggers while aiming to get an accuracy score above 0.95.</p>
+
+  </div>
+
+  
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+
+	    var disqus_shortname = 'samriddhisinha';
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+</article>
+
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+            <div class="svg-icon">
+          
+<a href="mailto:samriddhisinha.iitkgp@gmail.com"><i class="icon-envelope icon-2x"></i></a>
+<a href="https://www.facebook.com/samriddhi.sinha.7"><i class="icon-facebook-sign icon-2x"></i></a>
+
+<a href="https://github.com/djokester"><i class="icon-github icon-2x"></i></a>
+<a href="https://instagram.com/samriddhidjokester"><i class="icon-instagram icon-2x"></i></a>
+
+
+
+<a href="https://www.twitter.com/samdjokester"><i class="icon-twitter icon-2x"></i></a>
+
+
+
+
+            </div>
+        </footer>
+      </div>
+    </div>
+
+
+    
+
+  </body>
+</html>
